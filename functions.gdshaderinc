@@ -1,4 +1,4 @@
-// 2D Geometries //
+// 2D Simple Geometries //
 
 // The MIT License
 // Copyright © 2018 Inigo Quilez
@@ -26,9 +26,9 @@ float sdPentagram(vec2 p, float r) {
 		* sign(p.y*v3.x-p.x*v3.y);
 }
 
-float sdBox(vec2 p, vec2 b) {
-    vec2 d = abs(p)-b;
-    return length(max(d,0.0)) + min(max(d.x,d.y),0.0);
+float sdBox(vec2 position, vec2 b, float sharp) {
+    vec2 d = abs(position)-b ;
+    return (length(max(d,0.0)) + min(max(d.x,d.y),0.0)) * sharp ;
 }
 
 float sdSegment(vec2 p,vec2 a,vec2 b) {
@@ -106,23 +106,41 @@ float Quatrefoil(vec2 uv, float radius, float sharp) {
 	return e3;
 }
 
-float rosace(vec2 uv, float shape) {
-	float d1 = abs(sdCircle(uv, 0.6, 80.0));
+float rosace(vec2 position, float shape) {
+	float d1 = abs(sdCircle(position, 0.6, 80.0));
 	
 	float halfpi = 1.57;
 	//vec2 p = rot(halfpi) * uv;
-	float d2 = abs(sdCircle(uv, shape -0.3, 80.0));
+	float d2 = abs(sdCircle(position, shape -0.3, 80.0));
 	float d3 = 1e9;
 	for (int i = 0; i <10; i++) {
 		float halfpi = 1.57;
 		float a = float(i) * TAU / 10.0;
-		vec2 p = rot(a) * uv;
+		vec2 p = rot(a) * position;
 		d3 = min(d3, abs(sdVesica(p + vec2(0.0, 0.3), 0.5, shape)) * 80.0);
 		//halfpi = halfpi * 2.0;
 	}
 	float e1 = UNION(d1, d2);
 	float e2 = UNION(e1, d3);
 	return e2;
+}
+
+float Crescent_moon(vec2 position, float radius, float sharp) {
+	float d = sdCircle(position, radius, sharp);
+	float d1 = sdCircle(position + vec2(0.1, 0.0), radius, sharp);
+	return d = DIFFERENCE(d1, d);
+}
+
+float square_circle(vec2 uv, int duplication, float size) {
+	float d2 = 1e9;
+	for (int i = 0; i <duplication; i++) {
+		float halfpi = 1.57;
+		float a = float(i) * TAU / 10.0;
+		vec2 p = rot(a) * uv;
+		 d2 = min(d2, abs(sdBox(p,  vec2(size, size), 80.0)));
+		//halfpi = halfpi * 2.0;
+	}
+	return d2;
 }
 
 // COLOR //
