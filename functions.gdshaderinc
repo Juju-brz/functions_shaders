@@ -46,6 +46,7 @@ float sdHeart( in vec2 p ) {
 		return sqrt(min(dot2(p-vec2(0.00,1.00)),
 						dot2(p-0.5*max(p.x+p.y,0.0)))) * sign(p.x-p.y);
 }
+
 float sdVesica(vec2 p, float r, float d) {
     p = abs(p);
 
@@ -88,6 +89,7 @@ mat2 rot(float a) {
 	float c = cos(a), s = sin(a);
 	return mat2(vec2(c, -s), vec2(s, c));
 }
+
 mat3 translate2d(vec2 t) {
 	return mat3(vec3(1.0, 0.0, 0.0),
 				vec3(0.0, 1.0, 0.0),
